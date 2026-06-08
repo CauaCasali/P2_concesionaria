@@ -1,87 +1,100 @@
-# Concessionária — API de Gerenciamento de Estoque
+# Concessionária API
 
-API REST para controle do estoque de veículos de uma concessionária, construída com Django e banco de dados PostgreSQL. Permite consultar carros por situação: disponível, reservado ou vendido.
+API REST desenvolvida em Django para gerenciar o estoque de veículos de uma concessionária. O sistema permite consultar carros cadastrados e verificar sua situação atual, podendo estar disponíveis, reservados ou vendidos.
 
----
+## Tecnologias utilizadas
 
-## Tecnologias
+* Python
+* Django
+* Django REST Framework
+* PostgreSQL
+* Docker
+* Docker Compose
 
-- Python / Django
-- PostgreSQL
-- Docker + Docker Compose
+## Configuração
 
----
-
-## Variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto com o conteúdo abaixo:
+Antes de iniciar o projeto, crie um arquivo `.env` na raiz com as seguintes variáveis:
 
 ```env
 DJANGO_SECRET_KEY=chave-secreta
 ALLOWED_HOSTS=*
+
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
 POSTGRES_DB=nome_do_banco
 POSTGRES_USER=usuario
 POSTGRES_PASSWORD=senha
+
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=senha-do-admin
 ```
 
-> O valor de `POSTGRES_HOST` deve ser `postgres`, que é o nome do serviço definido no Docker Compose.
-
----
+O valor de `POSTGRES_HOST` deve ser `postgres`, pois esse é o nome do serviço configurado no Docker Compose.
 
 ## Como executar
+
+Para iniciar a aplicação, execute:
 
 ```bash
 docker compose up -d
 ```
 
-Na inicialização, o Docker realiza automaticamente:
+Ao iniciar, o Docker irá:
 
-1. Sobe o container do PostgreSQL
-2. Aguarda o banco ficar disponível (healthcheck)
-3. Aplica as migrations
-4. Cria o superusuário com as credenciais do `.env`
-5. Sobe o servidor na porta `8000`
+* Criar o container do PostgreSQL;
+* Aguardar o banco ficar disponível;
+* Executar as migrations;
+* Criar o superusuário automaticamente;
+* Iniciar o servidor Django.
 
-Para acompanhar os logs em tempo real:
+Após a inicialização, a API estará disponível em:
+
+```text
+http://localhost:8000
+```
+
+## Endpoints
+
+| Método | Endpoint                   | Descrição                            |
+| ------ | -------------------------- | ------------------------------------ |
+| GET    | `/api/carros/`             | Lista todos os veículos              |
+| GET    | `/api/carros/disponiveis/` | Lista apenas os veículos disponíveis |
+| GET    | `/api/carros/reservados/`  | Lista apenas os veículos reservados  |
+| GET    | `/api/carros/vendidos/`    | Lista apenas os veículos vendidos    |
+
+## Painel administrativo
+
+O Django Admin pode ser acessado em:
+
+```text
+http://localhost:8000/admin/
+```
+
+Utilize as credenciais definidas no arquivo `.env`.
+
+## Logs
+
+Para acompanhar os logs da aplicação:
 
 ```bash
 docker compose logs -f
 ```
 
----
+## Encerrando a aplicação
 
-## Endpoints
-
-Base URL: `http://localhost:8000`
-
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| GET | `/api/carros/` | Retorna todos os veículos |
-| GET | `/api/carros/disponiveis` | Veículos disponíveis para venda |
-| GET | `/api/carros/reservados` | Veículos com reserva ativa |
-| GET | `/api/carros/vendidos` | Veículos já vendidos |
-
----
-
-## Administração
-
-O painel administrativo está disponível em `http://localhost:8000/admin/`.
-
-Use as credenciais configuradas nas variáveis `DJANGO_SUPERUSER_*` do `.env`.
-
----
-
-## Encerrando
+Parar os containers:
 
 ```bash
-# Parar os containers
 docker compose down
+```
 
-# Parar e apagar os dados do banco
+Parar os containers e remover os dados armazenados no banco:
+
+```bash
 docker compose down -v
 ```
+
+## Objetivo do projeto
+
+Este projeto foi desenvolvido com o objetivo de aplicar os conceitos estudados na disciplina, incluindo criação de APIs REST, integração com banco de dados PostgreSQL, operações CRUD e utilização de Docker para containerização da aplicação.
